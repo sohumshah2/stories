@@ -9,11 +9,13 @@
 :root {
   --dark: #22303C;
   --darker: #192734;
-  --darkest: #15202B;
+  /* --darkest: #15202B; */
+  --mint-white: #E9FFF9;
   --contrast: #8899AC;
+  --text: #292F36;
 }
 
-/* General Styles */
+/* General Styles */ 
 body {
   margin: 0;
   font-family: 'Roboto', sans-serif;
@@ -21,8 +23,8 @@ body {
   line-height: 1.5;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  background-color: var(--darkest);
-  color: white;
+  background-color: var(--mint-white);
+  color: var(--text);
 }
 
 *, *:before, *:after {
@@ -76,14 +78,14 @@ h6 {
 
 /* Anchors */
 a {
-  color: white;
+  color: var(--text);
 }
 
 /* Buttons */
 button {
-  --button-bg: white;
-  --border-bg: white;
-  --text-color: var(--darkest);
+  --button-bg: var(--text);
+  --border-bg: var(--text);
+  --text-color: var(--mint-white);
   display: inline-block;
   width: fit-content;
   border: none;
