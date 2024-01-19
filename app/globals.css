@@ -3,22 +3,22 @@
 @tailwind utilities;
 
 /* Fonts */
-@import url('https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,400;0,700;0,900;1,400;1,700&display=swap');
+@import url("https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,400;0,700;0,900;1,400;1,700&display=swap");
 
 /* Colors */
 :root {
-  --dark: #22303C;
+  --dark: #22303c;
   --darker: #192734;
   /* --darkest: #15202B; */
-  --mint-white: #E9FFF9;
-  --contrast: #8899AC;
-  --text: #292F36;
+  --mint-white: #e9fff9;
+  --contrast: #8899ac;
+  --text: #292f36;
 }
 
-/* General Styles */ 
+/* General Styles */
 body {
   margin: 0;
-  font-family: 'Roboto', sans-serif;
+  font-family: "Roboto", sans-serif;
   font-size: 16px;
   line-height: 1.5;
   -webkit-font-smoothing: antialiased;
@@ -27,7 +27,9 @@ body {
   color: var(--text);
 }
 
-*, *:before, *:after {
+*,
+*:before,
+*:after {
   box-sizing: border-box;
 }
 
@@ -36,7 +38,12 @@ p {
   margin: 0 0 1.3rem;
 }
 
-h1, h2, h3, h4, h5, h6 {
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
   margin: 0;
 }
 
@@ -93,7 +100,7 @@ button {
   background-color: var(--button-bg);
   color: var(--text-color);
   border: 2px solid var(--border-bg);
-  transition: .2s opacity;
+  transition: 0.2s opacity;
   padding: 0.5em 1.5em;
   cursor: pointer;
   border-radius: 0.8125rem;

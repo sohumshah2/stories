@@ -1,6 +1,6 @@
 import TitleBar from '../title-bar/title-bar';
 import ReactMarkdown from 'react-markdown';
-import { useMarkdown } from '../../providers/markdown-provider';
+import { useMarkdown } from '../providers/markdown-provider';
 import './preview.css';
 
 const Preview = () => {

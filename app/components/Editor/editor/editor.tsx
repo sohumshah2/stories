@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import TitleBar from '../title-bar/title-bar';
-import { useMarkdown } from '../../providers/markdown-provider';
+import { useMarkdown } from '../providers/markdown-provider';
 import './editor.css';
 
 const Editor = () => {
