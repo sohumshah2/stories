@@ -22,6 +22,10 @@ const storySchema = new Schema(
       type: Date,
       required: true,
     },
+    imageSrc: {
+      type: String,
+      default: process.env.DEFAULT_STORY_IMAGE,
+    },
   },
   { timestamps: true }
 );

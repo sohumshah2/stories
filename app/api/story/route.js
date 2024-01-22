@@ -6,9 +6,12 @@ import jwt from "jsonwebtoken";
 export async function POST(request) {
   try {
     await connectMongoDB();
+    console.log("got here1");
 
-    const { name, contents, author, dateCreated, dateLastModified } =
+    const { name, contents, author, dateCreated, dateLastModified, imageSrc } =
       await request.json();
+
+    console.log("got here2");
 
     // Check if an authorization token was provided in the header
     const token = request.headers.get("Authorization")?.replace("Bearer ", "");
@@ -46,18 +49,23 @@ export async function POST(request) {
             $set: {
               contents,
               dateLastModified,
+              imageSrc,
             },
           }
         );
         return NextResponse.json({ message: "Story updated" }, { status: 200 });
       } else {
         // If it doesn't exist, create a new story
+        console.log("got here");
+
+        console.log("img src", imageSrc);
         await Story.create({
           name,
           contents,
           author,
           dateCreated,
           dateLastModified,
+          imageSrc,
         });
         return NextResponse.json({ message: "Story saved" }, { status: 201 });
       }
