@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { getSignedURL } from "@/app/actions";
+import { getSession, useSession } from "next-auth/react";
 
 const ImageUpload = ({
   setImage,
@@ -9,6 +10,8 @@ const ImageUpload = ({
   setImageSrc,
 }: any) => {
   const [file, setLocalFile] = useState(null);
+
+  const accessToken = useSession().data?.user?.accessToken;
 
   const handleUpload = async () => {
     console.log("file", { file });
@@ -71,6 +74,59 @@ const ImageUpload = ({
     }
   };
 
+  // move this to a separate component or different file
+  const getStoryMetadata = async () => {
+    console.log(await getSession());
+    console.log("accestoken", accessToken);
+    try {
+      const author = (await getSession())?.user?.email || "";
+      const url = `http://localhost:3000/api/stories?author=${encodeURIComponent(
+        author
+      )}`;
+      console.log("url", url);
+      const res = await fetch(url, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${accessToken}`,
+        },
+      });
+      if (!res.ok) {
+        console.log("Error getting story metadata");
+      }
+      const data = await res.json();
+      console.log("data", data);
+    } catch (error) {
+      console.log("Error getting story metadata", error);
+    }
+  };
+
+  // move this to a separate component or different file
+  const getStoryContents = async () => {
+    console.log(await getSession());
+    try {
+      const author = (await getSession())?.user?.email || "";
+      const url = `http://localhost:3000/api/story?author=${encodeURIComponent(
+        author
+      )}&story=${encodeURIComponent("sd")}`;
+      console.log("url", url);
+      const res = await fetch(url, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${accessToken}`,
+        },
+      });
+      if (!res.ok) {
+        console.log("Error getting story contents");
+      }
+      const data = await res.json();
+      console.log("data", data);
+    } catch (error) {
+      console.log("Error getting story contents", error);
+    }
+  };
+
   return (
     <div>
       <input
@@ -79,6 +135,10 @@ const ImageUpload = ({
         onChange={handleFileChange}
       />
       <button onClick={handleUpload}>Upload Image</button>
+      <button onClick={getStoryMetadata}>Get story metadata</button>{" "}
+      {/* temporary */}
+      <button onClick={getStoryContents}>Get story contents</button>{" "}
+      {/* temporary */}
     </div>
   );
 };
