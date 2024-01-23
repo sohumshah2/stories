@@ -12,6 +12,7 @@ const Editor = () => {
   const [chars, setChars] = useState(0);
   const [storyName, setStoryName] = useState("");
   const [image, setImage] = useState<File | undefined>(undefined);
+  const [id, setId] = useState<string>("0");
   const [imageUrl, setImageUrl] = useState<string | undefined>(undefined); // this is the local url
 
   const defaultImageSrc =
@@ -19,8 +20,6 @@ const Editor = () => {
 
   const [imageSrc, setImageSrc] = useState<string>(defaultImageSrc); // this is the url to be saved in the db
   // TODO: figure out how to use the .env var instead of hardcoding the url
-
-  console.log("default stiory image", imageSrc);
 
   const accessToken = useSession().data?.user?.accessToken;
   const email = useSession().data?.user?.email;
@@ -67,6 +66,7 @@ const Editor = () => {
           Authorization: `Bearer ${accessToken}`,
         },
         body: JSON.stringify({
+          id: id,
           name: storyName,
           contents: markdown,
           author: email,
@@ -75,6 +75,9 @@ const Editor = () => {
           imageSrc: imageSrc,
         }),
       });
+      const returnedId: string = (await res.json()).id;
+      setId(returnedId);
+      console.log("id", returnedId);
       if (!res.ok) {
         throw Error();
       }

@@ -108,7 +108,7 @@ const ImageUpload = ({
       const author = (await getSession())?.user?.email || "";
       const url = `http://localhost:3000/api/story?author=${encodeURIComponent(
         author
-      )}&story=${encodeURIComponent("sd")}`;
+      )}&storyId=${encodeURIComponent("65af9ce976db47e7673c5216")}`;
       console.log("url", url);
       const res = await fetch(url, {
         method: "GET",

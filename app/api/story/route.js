@@ -29,17 +29,17 @@ export async function GET(request) {
       );
     }
 
-    if (!queryParams.has("story")) {
+    if (!queryParams.has("storyId")) {
       return NextResponse.json(
         {
-          message: "Missing story query parameter.",
+          message: "Missing story id query parameter.",
         },
         { status: 400 }
       );
     }
 
     const author = queryParams.get("author");
-    const story = queryParams.get("story");
+    const storyId = queryParams.get("storyId");
 
     // Verify the JWT token
     const secret = process.env.JWT_SECRET;
@@ -60,18 +60,22 @@ export async function GET(request) {
     }
 
     // Now get the story contents
-    const contents = await Story.find({ author, name: story }).select(
-      "contents"
-    );
+    try {
+      const contents = await Story.find({ author, _id: storyId }).select(
+        "contents"
+      );
 
-    if (!contents || contents.length === 0) {
+      if (!contents || contents.length === 0) {
+        throw new Error();
+      }
+
+      return NextResponse.json({ contents: contents[0] }, { status: 200 });
+    } catch (error) {
       return NextResponse.json(
         { message: "Story not found." },
         { status: 404 }
       );
     }
-
-    return NextResponse.json({ contents: contents[0] }, { status: 200 });
   } catch (error) {
     console.error("Error getting stories", error);
     return NextResponse.error({
@@ -86,8 +90,15 @@ export async function POST(request) {
     await connectMongoDB();
     console.log("got here1");
 
-    const { name, contents, author, dateCreated, dateLastModified, imageSrc } =
-      await request.json();
+    const {
+      id,
+      name,
+      contents,
+      author,
+      dateCreated,
+      dateLastModified,
+      imageSrc,
+    } = await request.json();
 
     console.log("got here2");
 
@@ -113,31 +124,50 @@ export async function POST(request) {
         );
       }
 
+      console.log("gothere3", id === "0");
+
+      let existingStory = false;
+      if (id !== "0") {
+        existingStory = await Story.findOne({
+          _id: id,
+          author,
+        });
+      }
+
       // Check if a story with the same name and author already exists
-      const existingStory = await Story.findOne({
-        name,
-        author,
-      });
+      // const existingStory =
+      //   id === "0"
+      //     ? id
+      // : await Story.findOne({
+      //     _id: id,
+      //     author,
+      //   });
+
+      console.log("existing story", existingStory);
 
       if (existingStory) {
         // If it exists, update the contents and dateLastModified
         await Story.findOneAndUpdate(
-          { name, author },
+          { _id: id, author },
           {
             $set: {
+              name,
               contents,
               dateLastModified,
               imageSrc,
             },
           }
         );
-        return NextResponse.json({ message: "Story updated" }, { status: 200 });
+        return NextResponse.json(
+          { message: "Story updated", id },
+          { status: 200 }
+        );
       } else {
         // If it doesn't exist, create a new story
         console.log("got here");
 
         console.log("img src", imageSrc);
-        await Story.create({
+        const newStory = await Story.create({
           name,
           contents,
           author,
@@ -145,7 +175,10 @@ export async function POST(request) {
           dateLastModified,
           imageSrc,
         });
-        return NextResponse.json({ message: "Story saved" }, { status: 201 });
+        return NextResponse.json(
+          { message: "Story saved", id: newStory._id },
+          { status: 201 }
+        );
       }
     } catch (verifyError) {
       console.error("Error verifying JWT token", verifyError);
