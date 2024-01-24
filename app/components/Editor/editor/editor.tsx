@@ -5,6 +5,7 @@ import "./editor.css";
 import { connectMongoDB } from "@/lib/mongodb";
 import { useSession } from "next-auth/react";
 import ImageUpload from "../imageUpload/imageUpload";
+import { useSearchParams } from "next/navigation";
 
 const Editor = () => {
   const [markdown, setMarkdown] = useMarkdown() || ["", () => {}];
@@ -12,7 +13,9 @@ const Editor = () => {
   const [chars, setChars] = useState(0);
   const [storyName, setStoryName] = useState("");
   const [image, setImage] = useState<File | undefined>(undefined);
-  const [id, setId] = useState<string>("0");
+  const searchParams = useSearchParams();
+
+  const [id, setId] = useState<string>(searchParams.get("id") || "0");
   const [imageUrl, setImageUrl] = useState<string | undefined>(undefined); // this is the local url
 
   const defaultImageSrc =
@@ -21,8 +24,45 @@ const Editor = () => {
   const [imageSrc, setImageSrc] = useState<string>(defaultImageSrc); // this is the url to be saved in the db
   // TODO: figure out how to use the .env var instead of hardcoding the url
 
+  console.log("searchParams", searchParams.get("id"));
+
   const accessToken = useSession().data?.user?.accessToken;
   const email = useSession().data?.user?.email;
+
+  useEffect(() => {
+    if (id && accessToken && email) {
+      getStoryContents();
+      console.log(accessToken);
+    }
+  }, [id, accessToken, email]);
+
+  // this is reused; TODO: move to a separate helper function file
+  const getStoryContents = async () => {
+    try {
+      const url = `http://localhost:3000/api/story?author=${encodeURIComponent(
+        email
+      )}&storyId=${encodeURIComponent(id)}`;
+      console.log("url", url);
+      const res = await fetch(url, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${accessToken}`,
+        },
+      });
+      if (!res.ok) {
+        console.log("Error getting story contents");
+      }
+      const data = await res.json();
+      console.log("data", data);
+      setMarkdown(data.contents);
+      setStoryName(data.name);
+    } catch (error) {
+      console.log("Error getting story contents", error);
+    }
+  };
+
+  // getStoryContents();
 
   const getWordsCount = (str: String) => {
     return (str.match(/(\w+)/g) || "").length;

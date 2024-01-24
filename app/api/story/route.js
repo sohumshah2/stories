@@ -59,17 +59,18 @@ export async function GET(request) {
       return NextResponse.json({ message: "Invalid token." }, { status: 403 });
     }
 
-    // Now get the story contents
+    // Now get the story contents and name
     try {
-      const contents = await Story.find({ author, _id: storyId }).select(
-        "contents"
+      const { contents, name } = await Story.findOne(
+        { author, _id: storyId },
+        { contents: 1, name: 1 }
       );
 
       if (!contents || contents.length === 0) {
         throw new Error();
       }
 
-      return NextResponse.json({ contents: contents[0] }, { status: 200 });
+      return NextResponse.json({ contents, name }, { status: 200 });
     } catch (error) {
       return NextResponse.json(
         { message: "Story not found." },

@@ -7,6 +7,11 @@ const nextConfig = {
         hostname: "**.googleusercontent.com",
         port: "",
       },
+      {
+        protocol: "https",
+        hostname: "stories-bucket.s3.ap-southeast-2.amazonaws.com",
+        port: "",
+      },
     ],
   },
 };
