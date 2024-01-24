@@ -57,6 +57,7 @@ const Editor = () => {
       console.log("data", data);
       setMarkdown(data.contents);
       setStoryName(data.name);
+      setImageUrl(data.imageSrc);
     } catch (error) {
       console.log("Error getting story contents", error);
     }
@@ -146,12 +147,12 @@ const Editor = () => {
         setImageSrc={setImageSrc}
       />{" "}
       {/* temporary */}
-      {imageUrl && image && (
-        <div className="rounded-lg overflow-hidden w-32 h-32 relative">
+      {imageUrl && (
+        <div className="rounded-lg overflow-hidden w-80 h-80 relative">
           <img
-            className="object-cover w-48 h-36"
+            // className="object-cover"
             src={imageUrl}
-            alt={image.name}
+            alt={image?.name || "Uploaded image"}
           />
         </div>
       )}

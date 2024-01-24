@@ -61,16 +61,16 @@ export async function GET(request) {
 
     // Now get the story contents and name
     try {
-      const { contents, name } = await Story.findOne(
+      const { contents, name, imageSrc } = await Story.findOne(
         { author, _id: storyId },
-        { contents: 1, name: 1 }
+        { contents: 1, name: 1, imageSrc: 1 }
       );
 
       if (!contents || contents.length === 0) {
         throw new Error();
       }
 
-      return NextResponse.json({ contents, name }, { status: 200 });
+      return NextResponse.json({ contents, name, imageSrc }, { status: 200 });
     } catch (error) {
       return NextResponse.json(
         { message: "Story not found." },
