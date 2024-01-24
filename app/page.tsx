@@ -1,23 +1,32 @@
-'use client'
+"use client";
 
-import MainLayout from './components/Editor/main-layout/main-layout';
-import Editor from './components/Editor/editor/editor';
-import Preview from './components/Editor/preview/preview';
-import MarkdownProvider from './components/Editor/providers/markdown-provider';
-import SignInBtn from './components/SignIn/SignInBtn';
+import Image from "next/image";
+import { signIn, useSession } from "next-auth/react";
+import { useRouter } from "next/navigation";
 
+// (Barebones atm) about page
 export default function Home() {
+  const session = useSession();
+  const router = useRouter();
+
+  if (session.data) {
+    router.push("/stories");
+  }
+
+  const handleSignIn = async () => {
+    await signIn("google", { callbackUrl: "http://localhost:3000/stories" });
+  };
+
   return (
-    <MarkdownProvider>
-      <SignInBtn />
-      <MainLayout>
-        <MainLayout.Column>
-          <Editor />
-        </MainLayout.Column>
-        <MainLayout.Column>
-          <Preview />
-        </MainLayout.Column>
-      </MainLayout>
-    </MarkdownProvider>
-  )
+    <div>
+      <button onClick={handleSignIn} className="rounded-full">
+        <Image
+          src="/google-logo.png"
+          height={30}
+          width={30}
+          alt="Google logo"
+        />
+      </button>
+    </div>
+  );
 }
