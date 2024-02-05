@@ -1,3 +1,10 @@
 - A web app to edit and publish stories
+- Stories can be written using a built-in markdown editor featuring a preview panel
+- Users can sign in with Google Auth and their stories will be saved to MongoDB
+- Stories can be saved and edited later.
+- Future plans:
+  - Publishing stories 
+  - Branching off a point in an existing story to create a new timeline
+  - An interactive story reader allowing the user to make decisions
 - Built using NextJS, NextAuth, React, MongoDB, Amazon S3, TailwindCSS
 - Currently in development, not yet deployed
